@@ -36,9 +36,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     private RelativeLayout mAbout;
     private RelativeLayout mSetting;
     private SharedPreferences preferences;
-    private CheckBox checkBox1,checkBox2;
-    private boolean isUpdate=false;
-    private static final String ISUPDATE="isupdate";
+    private CheckBox checkBox1, checkBox2;
+    private boolean isUpdate = false;
+    private boolean isNightMode = false;
+
 
     private List<String> list = new ArrayList<>();
     /**
@@ -56,15 +57,15 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     public void setView() {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);
-        preferences=getSharedPreferences("config",MODE_PRIVATE);
+        preferences = getSharedPreferences("config", MODE_PRIVATE);
         for (int i = 0; i < 100; i++)
             list.add("选项" + i);
     }
 
     @Override
     public void initData() {
-    isUpdate=preferences.getBoolean(ISUPDATE,false);
-
+        isUpdate = preferences.getBoolean(Const.ISUPDATE, false);
+        isNightMode = preferences.getBoolean(Const.ISNIGHTMODE, false);
     }
 
     @Override
@@ -73,14 +74,14 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         mSlidingMenu = (MySlidingMenu) findViewById(R.id.slidingmenu);
         listItem = (ListView) findViewById(R.id.list_item);
         mMenuToggle.setOnClickListener(this);
-        mLayoutUpdate=(RelativeLayout)findViewById(R.id.item_update);
-        mNightMode=(RelativeLayout)findViewById(R.id.item_mode);
-        mCollecte=(RelativeLayout)findViewById(R.id.item_collect);
-        mNote=(RelativeLayout)findViewById(R.id.item_note);
-        mAbout=(RelativeLayout)findViewById(R.id.item_about);
-        mSetting=(RelativeLayout)findViewById(R.id.item_setting);
-        checkBox1=(CheckBox)findViewById(R.id.checkBox1);
-        checkBox2=(CheckBox)findViewById(R.id.checkBox2);
+        mLayoutUpdate = (RelativeLayout) findViewById(R.id.item_update);
+        mNightMode = (RelativeLayout) findViewById(R.id.item_mode);
+        mCollecte = (RelativeLayout) findViewById(R.id.item_collect);
+        mNote = (RelativeLayout) findViewById(R.id.item_note);
+        mAbout = (RelativeLayout) findViewById(R.id.item_about);
+        mSetting = (RelativeLayout) findViewById(R.id.item_setting);
+        checkBox1 = (CheckBox) findViewById(R.id.checkBox1);
+        checkBox2 = (CheckBox) findViewById(R.id.checkBox2);
         mLayoutUpdate.setOnClickListener(this);
         mNightMode.setOnClickListener(this);
         mCollecte.setOnClickListener(this);
@@ -88,12 +89,16 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         mAbout.setOnClickListener(this);
         mSetting.setOnClickListener(this);
         listItem.setAdapter(new MyAdapter());
-        if(isUpdate){
+        if (isUpdate) {
             checkBox1.setChecked(true);
-        }else{
+        } else {
             checkBox1.setChecked(false);
         }
-
+        if (isNightMode) {
+            checkBox2.setChecked(true);
+        } else {
+            checkBox2.setChecked(false);
+        }
     }
 
     @Override
@@ -102,7 +107,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                Toast.makeText(MainActivity.this, list.get(position)+"", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, list.get(position) + "", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -114,17 +119,24 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 mSlidingMenu.toggleMenu();
                 break;
             case R.id.item_update:
-                isUpdate=preferences.getBoolean(ISUPDATE,false);
-                if (isUpdate){
+                isUpdate = preferences.getBoolean(Const.ISUPDATE, false);
+                if (isUpdate) {
                     checkBox1.setChecked(false);
-                    preferences.edit().putBoolean(ISUPDATE,false).commit();
-                }else{
+                    preferences.edit().putBoolean(Const.ISUPDATE, false).commit();
+                } else {
                     checkBox1.setChecked(true);
-                    preferences.edit().putBoolean(ISUPDATE,true).commit();
+                    preferences.edit().putBoolean(Const.ISUPDATE, true).commit();
                 }
                 break;
             case R.id.item_mode:
-
+                isNightMode = preferences.getBoolean(Const.ISNIGHTMODE, false);
+                if (isUpdate) {
+                    checkBox2.setChecked(false);
+                    preferences.edit().putBoolean(Const.ISNIGHTMODE, false).commit();
+                } else {
+                    checkBox2.setChecked(true);
+                    preferences.edit().putBoolean(Const.ISNIGHTMODE, true).commit();
+                }
                 break;
             case R.id.item_collect:
                 break;
