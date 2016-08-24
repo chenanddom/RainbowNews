@@ -25,7 +25,9 @@ import android.widget.Toast;
 
 import com.dom.rainbownews.base.BaseActivity;
 import com.dom.rainbownews.slidingmenu.MySlidingMenu;
+import com.dom.rainbownews.utils.LogUtils;
 import com.dom.rainbownews.utils.StreamUtils;
+import com.dom.rainbownews.utils.ToastUtils;
 import com.lidroid.xutils.HttpUtils;
 import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.http.ResponseInfo;
@@ -71,7 +73,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 case Const.UPDATE_CODE:
                     showDialog();
                     break;
-                case 2:
+                case Const.ERR_CODE:
+                    ToastUtils.ToastInfo(MainActivity.this,"出错了!");
                     break;
                 case 3:
                     break;
@@ -120,7 +123,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         mAbout.setOnClickListener(this);
         mSetting.setOnClickListener(this);
         listItem.setAdapter(new MyAdapter());
-        System.out.println("update:" + isUpdate + "----------------------------");
+//        System.out.println("update:" + isUpdate + "----------------------------");
+        LogUtils.printInfo("update","-------------------"+true);
         if (isUpdate) {
             checkBox1.setChecked(true);
             checkVesion();
@@ -165,9 +169,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                         mVersionConde = json.getInt("versionCode");
                         mDescription = json.getString("description");
                         mDownloadUrl = json.getString("downloadUrl");
-//                        System.out.println("=======" + mDescription);
                         // 判断服务器的versioncode和本地放入versionCode对比
-                        System.out.println("versioncode:"+mVersionConde+"------------------------------");
+                        LogUtils.printInfo("versionCode", "--------------------------" + mVersionConde);
                         if (mVersionConde > getVersionCode()) {
                             // 如果网络服务器端获取的版本号比当前的版本号要大，那么就发送消息弹出对话框提示更新
                             msg.what = Const.UPDATE_CODE;
