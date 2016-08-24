@@ -2,11 +2,32 @@ package com.dom.rainbownews.base;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 
 /**
  * activity的基类
  */
 public abstract class BaseActivity extends Activity {
+	private Handler handler =new Handler(){
+		@Override
+		public void handleMessage(Message msg) {
+			/*switch (msg.what){
+				case 1:
+
+					break;
+				case 2:
+					break;
+				case 3:
+					break;
+				case 4:
+					break;
+				case 5:
+					break;
+				default:
+			}*/
+		}
+	};
 @Override
 protected void onCreate(Bundle savedInstanceState) {
 	// TODO Auto-generated method stub
