@@ -392,6 +392,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener ,
                 }
                 break;
             case R.id.item_collect:
+                startActivity(new Intent(MainActivity.this,CollectionActivity.class));
                 break;
             case R.id.item_note:
                 break;

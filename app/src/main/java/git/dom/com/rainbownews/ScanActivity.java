@@ -3,6 +3,7 @@ package git.dom.com.rainbownews;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -49,15 +50,22 @@ public class ScanActivity extends BaseActivity implements OnClickListener {
         // TODO Auto-generated method stub
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_scan);
-        data = new String[2];
+        data = new String[3];
         sharedPreferences = getSharedPreferences("config", MODE_PRIVATE);
 //        historyItem = new HistoryItem(ScanActivity.this);
         layout_bar = (RelativeLayout) findViewById(R.id.layout_bar);
         Intent intent = getIntent();
         title = intent.getStringExtra("title");
         url = intent.getStringExtra("url");
+        if (TextUtils.isEmpty(title)){
+            data[0] = "标题未知";
+            data[1] = url;
+            data[2] = System.currentTimeMillis() + "";
+    }else{
         data[0] = title;
         data[1] = url;
+        data[2] = System.currentTimeMillis() + "";
+    }
         night_mode = sharedPreferences.getBoolean(Const.ISNIGHTMODE, false);
         if (night_mode) {
             layout_bar.setBackgroundResource(R.mipmap.title_barbackground);

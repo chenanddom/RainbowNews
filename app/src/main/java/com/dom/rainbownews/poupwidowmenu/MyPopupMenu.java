@@ -25,9 +25,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.dom.rainbownews.adapter.BodyAdapter;
+import com.dom.rainbownews.db.NewsCollect;
 import com.dom.rainbownews.utils.ToastUtils;
 
 import java.util.List;
+
+import git.dom.com.rainbownews.Const;
 
 public class MyPopupMenu extends PopupWindow {
 
@@ -78,7 +81,7 @@ public class MyPopupMenu extends PopupWindow {
      */
     private int screenWidth = 0;
     private String[] data;
-//    private NewsCollect newsCollect;
+    private NewsCollect newsCollect;
     SharedPreferences sharedPreferences;
 
     @SuppressWarnings("deprecation")
@@ -88,7 +91,7 @@ public class MyPopupMenu extends PopupWindow {
         super(context);
         this.context = context;
         this.data = data;
-//        newsCollect = new NewsCollect(context);
+        newsCollect = new NewsCollect(context);
         sharedPreferences = context.getSharedPreferences("config",
                 Context.MODE_PRIVATE);
         /**
@@ -217,8 +220,7 @@ public class MyPopupMenu extends PopupWindow {
 
                 switch (position) {
                     case 0:
-
-                        break;/*       boolean flag = newsCollect.add(data[0], data[1]);
+                        boolean flag = newsCollect.add(data[0], data[1],data[2]);
                         if (flag) {
                             Toast.makeText(context, "收藏成功", Toast.LENGTH_SHORT)
                                     .show();
@@ -226,22 +228,21 @@ public class MyPopupMenu extends PopupWindow {
 
                             Toast.makeText(context, "收藏失败", Toast.LENGTH_SHORT)
                                     .show();
-                        }*/
+                        }
+                        break;
 
                     case 1:
                         shareUrl(data[1]);
                         break;
                     case 2:
-                        // ToastUnit.showInfo(context, "该功能正在开发中!!");
-
                         boolean night_mode = sharedPreferences.getBoolean(
-                                "isnightmode", false);
+                               Const.ISNIGHTMODE, false);
                         if (night_mode) {
                             sharedPreferences.edit()
-                                    .putBoolean("isnightmode", false).commit();
+                                    .putBoolean(Const.ISNIGHTMODE, false).commit();
                         } else {
                             sharedPreferences.edit()
-                                    .putBoolean("isnightmode", true).commit();
+                                    .putBoolean(Const.ISNIGHTMODE, true).commit();
                         }
                         break;
                     case 3:
@@ -260,18 +261,15 @@ public class MyPopupMenu extends PopupWindow {
                                 LiteratureActivity.class));*/
                         break;
                     case 6:
-                        // ToastUnit.showInfo(context, "该功能正在开发中!!");
-                        // context.startActivity(new Intent(context,
-                        // PrivateModeActivity.class));
-                        boolean tag = sharedPreferences.getBoolean("isprivatemode",
+                        boolean tag = sharedPreferences.getBoolean(Const.ISPRIVATE,
                                 false);
                         if (tag) {
                             sharedPreferences.edit()
-                                    .putBoolean("isprivatemode", false).commit();
+                                    .putBoolean(Const.ISPRIVATE, false).commit();
                             ToastUtils.ToastInfo(context, "无痕浏览关闭");
                         } else {
                             sharedPreferences.edit()
-                                    .putBoolean("isprivatemode", true).commit();
+                                    .putBoolean(Const.ISPRIVATE, true).commit();
                             ToastUtils.ToastInfo(context, "无痕浏览开启");
                         }
 
