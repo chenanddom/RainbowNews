@@ -1,6 +1,7 @@
 package git.dom.com.rainbownews;
 
 import android.app.AlertDialog;
+import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -14,16 +15,17 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.dom.rainbownews.base.BaseActivity;
+import com.dom.rainbownews.base.BaseFragment;
+import com.dom.rainbownews.fragment.BackHandledInterface;
+import com.dom.rainbownews.fragment.HomeNewsFragment;
 import com.dom.rainbownews.slidingmenu.MySlidingMenu;
 import com.dom.rainbownews.utils.LogUtils;
 import com.dom.rainbownews.utils.StreamUtils;
@@ -46,10 +48,9 @@ import java.util.List;
  * 主窗体实现新闻的概要显示
  * Created by Administrator on 2016/8/23 0023.
  */
-public class MainActivity extends BaseActivity implements View.OnClickListener {
+public class MainActivity extends BaseActivity implements View.OnClickListener ,BackHandledInterface{
     private ImageView mMenuToggle;
     private MySlidingMenu mSlidingMenu;
-    private ListView listItem;
     private RelativeLayout mLayoutUpdate;
     private RelativeLayout mNightMode;
     private RelativeLayout mCollecte;
@@ -64,17 +65,17 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     private int mVersionConde;
     private String mDescription;
     private String mDownloadUrl;
-
+    private android.app.FragmentManager fragmentManager;
     private List<String> list = new ArrayList<>();
-    private Handler handler = new Handler(){
+    private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
-            switch (msg.what){
+            switch (msg.what) {
                 case Const.UPDATE_CODE:
                     showDialog();
                     break;
                 case Const.ERR_CODE:
-                    ToastUtils.ToastInfo(MainActivity.this,"出错了!");
+                    ToastUtils.ToastInfo(MainActivity.this, "出错了!");
                     break;
                 case 3:
                     break;
@@ -86,13 +87,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             }
         }
     };
+
     @Override
     public void setView() {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);
         preferences = getSharedPreferences("config", MODE_PRIVATE);
-        for (int i = 0; i < 100; i++)
-            list.add("选项" + i);
+        fragmentManager=getFragmentManager();
     }
 
     @Override
@@ -106,7 +107,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     public void initView() {
         mMenuToggle = (ImageView) findViewById(R.id.menu_toggle);
         mSlidingMenu = (MySlidingMenu) findViewById(R.id.slidingmenu);
-        listItem = (ListView) findViewById(R.id.list_item);
         mMenuToggle.setOnClickListener(this);
         mLayoutUpdate = (RelativeLayout) findViewById(R.id.item_update);
         mNightMode = (RelativeLayout) findViewById(R.id.item_mode);
@@ -122,9 +122,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         mNote.setOnClickListener(this);
         mAbout.setOnClickListener(this);
         mSetting.setOnClickListener(this);
-        listItem.setAdapter(new MyAdapter());
+
 //        System.out.println("update:" + isUpdate + "----------------------------");
-        LogUtils.printInfo("update","-------------------"+true);
+        LogUtils.printInfo("update", "-------------------" + true);
         if (isUpdate) {
             checkBox1.setChecked(true);
             checkVesion();
@@ -136,21 +136,29 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         } else {
             checkBox2.setChecked(false);
         }
+        HomeNewsFragment homeNewsFragment=new HomeNewsFragment();
+        FragmentTransaction fragmentTransaction = fragmentManager
+                .beginTransaction();
+        // 把内容显示至真布局
+        fragmentTransaction.replace(R.id.container,homeNewsFragment);
+        // 提交事务
+        fragmentTransaction.commit();
     }
-/*
-* 检查版本号
-* */
-    public  void checkVesion() {
-   //获取当前时间
-    final long startTime=System.currentTimeMillis();
+
+    /*
+    * 检查版本号
+    * */
+    public void checkVesion() {
+        //获取当前时间
+        final long startTime = System.currentTimeMillis();
         new Thread(/*new Runnable()*/) {
             @Override
             public void run() {
                 Message msg = Message.obtain();
-                HttpURLConnection conn=null;
-                try{
+                HttpURLConnection conn = null;
+                try {
                     URL url = new URL(Const.STRUrl);
-                    conn=(HttpURLConnection)url.openConnection();
+                    conn = (HttpURLConnection) url.openConnection();
                     //设置请求方法
                     conn.setRequestMethod("GET");
                     //设置连接时间
@@ -159,7 +167,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                     conn.setReadTimeout(5000);
                     //建立真正的连接
                     conn.connect();
-                    if(conn.getResponseCode()==200){
+                    if (conn.getResponseCode() == 200) {
                         // 通过链接获取输入流
                         InputStream is = conn.getInputStream();
                         // 将流转化成字符串
@@ -179,10 +187,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                             msg.what = Const.ENTERY_HOME;
                         }
                     }
-                }catch (Exception e){
+                } catch (Exception e) {
                     msg.what = Const.ERR_CODE;
                     e.printStackTrace();
-                }finally {
+                } finally {
                     long endTime = System.currentTimeMillis();
                     long time = endTime - startTime;
                     // 此处强制休眠两秒钟
@@ -202,8 +210,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             }
         }.start();
     }
+
     /**
      * 获取版本号
+     *
      * @return 返回版本号
      */
     public int getVersionCode() {
@@ -220,8 +230,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         }
         return -1;
     }
+
     /**
      * 获取版本名
+     *
      * @return 返回版本名
      */
     private String getVersionName() {
@@ -286,16 +298,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         }
 
     }
+
     @Override
     public void setListener() {
-        listItem.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                Toast.makeText(MainActivity.this, list.get(position) + "", Toast.LENGTH_SHORT).show();
-            }
-        });
     }
+
     /**
      * 弹出对话框提示是否升级
      */
@@ -333,6 +341,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         });
         builder.show();
     }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -371,6 +380,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         }
     }
 
+    @Override
+    public void setSelectedFragment(BaseFragment selectedFragment) {
+
+    }
     public class MyAdapter extends BaseAdapter {
         @Override
         public int getCount() {
