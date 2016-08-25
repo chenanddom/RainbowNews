@@ -1,5 +1,8 @@
-
 package com.dom.rainbownews.fragment;
+
+/**
+ * Created by Administrator on 2016/8/25 0025.
+ */
 
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -31,11 +34,11 @@ import git.dom.com.rainbownews.R;
 
 
 /**
- * 国内新闻
+ * 国际新闻
  * Created by Administrator on 2016/8/24 0024.
  */
 
-public class HomeNewsFragment extends BaseFragment {
+public class ForeignNewsFragment extends BaseFragment {
     View view;
     ListView lv_card;
     // 请求返回的数据的数目
@@ -43,7 +46,7 @@ public class HomeNewsFragment extends BaseFragment {
     // 请求的页码
     private int page = 2;
     // 请求网址
-    private String httpUrl = "http://api.huceo.com/guonei/?key=f9a6dc0392b9c598afcf80c60048f8ef&num="
+    private String httpUrl = "http://api.huceo.com/world/?key=f9a6dc0392b9c598afcf80c60048f8ef&num="
             + num + "&page=" + page;
     private List<News> list = new ArrayList<>();
     private String title;
@@ -67,7 +70,7 @@ public class HomeNewsFragment extends BaseFragment {
 
         }
     };
-    public HomeNewsFragment() {
+    public ForeignNewsFragment() {
     }
     public CarAdapter getAdapter() {
         return adapter;
@@ -88,7 +91,7 @@ public class HomeNewsFragment extends BaseFragment {
                 // TODO Auto-generated method stub
                 if (lastItem == list.size() - 1) {
                     page++;
-                    httpUrl = "http://api.huceo.com/guonei/?key=f9a6dc0392b9c598afcf80c60048f8ef&num="
+                    httpUrl = "http://api.huceo.com/world/?key=f9a6dc0392b9c598afcf80c60048f8ef&num="
                             + num + "&page=" + page;
                     getData();
                 }
@@ -194,9 +197,9 @@ public class HomeNewsFragment extends BaseFragment {
             };
         }.start();
     }
-/**
-*按下回退键返回的时候就将缓存去除
-* */
+    /**
+     *按下回退键返回的时候就将缓存去除
+     * */
     @Override
     public boolean onBackPressd() {
         if (hadIntercept) {
@@ -211,4 +214,3 @@ public class HomeNewsFragment extends BaseFragment {
         }
     }
 }
-
