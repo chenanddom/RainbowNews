@@ -4,6 +4,7 @@ package com.dom.rainbownews.fragment;
  * Created by Administrator on 2016/8/25 0025.
  */
 
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
@@ -31,6 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import git.dom.com.rainbownews.R;
+import git.dom.com.rainbownews.ScanActivity;
 
 
 /**
@@ -58,6 +60,7 @@ public class ForeignNewsFragment extends BaseFragment {
     private ImageView btn_refresh;
     private int lastItem;
     private boolean hadIntercept;
+    private static final ForeignNewsFragment foreignNewsFragment=new ForeignNewsFragment();
     private Handler handler = new Handler() {
         public void handleMessage(android.os.Message msg) {
             switch (msg.what) {
@@ -72,6 +75,9 @@ public class ForeignNewsFragment extends BaseFragment {
     };
     public ForeignNewsFragment() {
     }
+    public static ForeignNewsFragment getInstance(){
+        return foreignNewsFragment;
+    }
     public CarAdapter getAdapter() {
         return adapter;
     }
@@ -79,10 +85,10 @@ public class ForeignNewsFragment extends BaseFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // TODO Auto-generated method stub
-        view = inflater.inflate(R.layout.fragment_home_news, null);
+        view = inflater.inflate(R.layout.fragment_foreign_news, null);
         getData();
         adapter = new CarAdapter(getActivity(), list);
-        lv_card = (ListView) view.findViewById(R.id.lv_home_news);
+        lv_card = (ListView) view.findViewById(R.id.lv_foreign_news);
         lv_card.setAdapter(adapter);
         lv_card.setOnScrollListener(new AbsListView.OnScrollListener() {
 
@@ -115,9 +121,9 @@ public class ForeignNewsFragment extends BaseFragment {
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
                 // TODO Auto-generated method stub
-            /*    Intent intent = new Intent(getActivity(), ScanActivity.class);
+                Intent intent = new Intent(getActivity(), ScanActivity.class);
                 intent.putExtra("url", list.get(position).getUrl());
-                startActivity(intent);*/
+                startActivity(intent);
                 // 页面之间动画切换 enterAnim进入的动画 exitAnim退出的动画
                 // overridePendingTransition(R.anim.tran_in, R.anim.tran_out);
             }

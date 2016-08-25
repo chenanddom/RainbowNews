@@ -41,4 +41,47 @@
         android:background="@android:color/white"
         android:layout_weight="9.8" >
     </FrameLayout>
+    <ImageView
+        android:layout_width="match_parent"
+        android:background="@android:color/darker_gray"
+        android:layout_height="1dp" />
+    <RadioGroup
+        android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:layout_weight="0.2"
+        android:background="@android:color/white"
+        android:layout_height="60dp">
+        <RadioButton
+            android:id="@+id/rb_home_news"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:button="@null"
+            android:layout_marginLeft="15dp"
+            android:background="@drawable/radiobutton_selector"
+           />
+        <RadioButton
+            android:id="@+id/rb_foreign_news"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:button="@null"
+            android:layout_marginLeft="30dp"
+            android:background="@drawable/radiobutton_selector2"
+            />
+        <RadioButton
+            android:id="@+id/rb_socienty_news"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:button="@null"
+            android:layout_marginLeft="30dp"
+            android:background="@drawable/radiobutton_selector3"
+            />
+    <RadioButton
+        android:id="@+id/rb_tech_news"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:button="@null"
+        android:layout_marginLeft="30dp"
+        android:background="@drawable/radiobutton_selector4"
+        />
+    </RadioGroup>
 </LinearLayout>

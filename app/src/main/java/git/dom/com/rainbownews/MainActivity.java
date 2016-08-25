@@ -1,6 +1,7 @@
 package git.dom.com.rainbownews;
 
 import android.app.AlertDialog;
+import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -17,7 +18,9 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -25,7 +28,10 @@ import android.widget.Toast;
 import com.dom.rainbownews.base.BaseActivity;
 import com.dom.rainbownews.base.BaseFragment;
 import com.dom.rainbownews.fragment.BackHandledInterface;
+import com.dom.rainbownews.fragment.ForeignNewsFragment;
 import com.dom.rainbownews.fragment.HomeNewsFragment;
+import com.dom.rainbownews.fragment.SocietyNewsFragdment;
+import com.dom.rainbownews.fragment.TechNewsFragment;
 import com.dom.rainbownews.slidingmenu.MySlidingMenu;
 import com.dom.rainbownews.utils.LogUtils;
 import com.dom.rainbownews.utils.StreamUtils;
@@ -44,11 +50,12 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+
 /**
  * 主窗体实现新闻的概要显示
  * Created by Administrator on 2016/8/23 0023.
  */
-public class MainActivity extends BaseActivity implements View.OnClickListener ,BackHandledInterface{
+public class MainActivity extends BaseActivity implements View.OnClickListener ,BackHandledInterface,RadioButton.OnCheckedChangeListener{
     private ImageView mMenuToggle;
     private MySlidingMenu mSlidingMenu;
     private RelativeLayout mLayoutUpdate;
@@ -65,8 +72,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener ,
     private int mVersionConde;
     private String mDescription;
     private String mDownloadUrl;
-    private android.app.FragmentManager fragmentManager;
+    private FragmentManager fragmentManager;
     private List<String> list = new ArrayList<>();
+    private RadioButton mRbHome,mRbForeign,mRbSociety,mRbTech;
+    private HomeNewsFragment homeNewsFragment;
+    private ForeignNewsFragment foreignNewsFragment;
+    private SocietyNewsFragdment societyNewsFragdment;
+    private TechNewsFragment techNewsFragment;
     private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -116,12 +128,22 @@ public class MainActivity extends BaseActivity implements View.OnClickListener ,
         mSetting = (RelativeLayout) findViewById(R.id.item_setting);
         checkBox1 = (CheckBox) findViewById(R.id.checkBox1);
         checkBox2 = (CheckBox) findViewById(R.id.checkBox2);
+        mRbHome=(RadioButton)findViewById(R.id.rb_home_news);
+        mRbForeign=(RadioButton)findViewById(R.id.rb_foreign_news);
+        mRbSociety=(RadioButton)findViewById(R.id.rb_socienty_news);
+        mRbTech=(RadioButton)findViewById(R.id.rb_tech_news);
+
         mLayoutUpdate.setOnClickListener(this);
         mNightMode.setOnClickListener(this);
         mCollecte.setOnClickListener(this);
         mNote.setOnClickListener(this);
         mAbout.setOnClickListener(this);
         mSetting.setOnClickListener(this);
+
+        mRbHome.setOnCheckedChangeListener(this);
+        mRbForeign.setOnCheckedChangeListener(this);
+        mRbSociety.setOnCheckedChangeListener(this);
+        mRbTech.setOnCheckedChangeListener(this);
 
 //        System.out.println("update:" + isUpdate + "----------------------------");
         LogUtils.printInfo("update", "-------------------" + true);
@@ -136,7 +158,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener ,
         } else {
             checkBox2.setChecked(false);
         }
-        HomeNewsFragment homeNewsFragment=new HomeNewsFragment();
+        mRbHome.setChecked(true);
+        homeNewsFragment=HomeNewsFragment.getInstance();
         FragmentTransaction fragmentTransaction = fragmentManager
                 .beginTransaction();
         // 把内容显示至真布局
@@ -384,6 +407,59 @@ public class MainActivity extends BaseActivity implements View.OnClickListener ,
     public void setSelectedFragment(BaseFragment selectedFragment) {
 
     }
+
+    @Override
+    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        if(isChecked){
+        switch (buttonView.getId()){
+            case R.id.rb_home_news:
+                if(homeNewsFragment==null){
+                    homeNewsFragment=HomeNewsFragment.getInstance();
+                }
+                FragmentTransaction fragmentTransaction = fragmentManager
+                        .beginTransaction();
+                // 把内容显示至真布局
+                fragmentTransaction.replace(R.id.container,homeNewsFragment);
+                // 提交事务
+                fragmentTransaction.commit();
+                break;
+            case R.id.rb_foreign_news:
+                    if(foreignNewsFragment==null){
+                foreignNewsFragment=ForeignNewsFragment.getInstance();
+            }
+                FragmentTransaction fragmentTransaction2 = fragmentManager
+                        .beginTransaction();
+                // 把内容显示至真布局
+                fragmentTransaction2.replace(R.id.container,foreignNewsFragment);
+                // 提交事务
+                fragmentTransaction2.commit();
+                break;
+            case R.id.rb_socienty_news:
+                if (societyNewsFragdment==null){
+                    societyNewsFragdment=SocietyNewsFragdment.getInstance();
+                }
+                FragmentTransaction fragmentTransaction3 = fragmentManager
+                        .beginTransaction();
+                // 把内容显示至真布局
+                fragmentTransaction3.replace(R.id.container,societyNewsFragdment);
+                // 提交事务
+                fragmentTransaction3.commit();
+                break;
+            case R.id.rb_tech_news:
+                if(techNewsFragment==null){
+                    techNewsFragment=TechNewsFragment.getInstance();
+                }
+                FragmentTransaction fragmentTransaction4 = fragmentManager
+                        .beginTransaction();
+                // 把内容显示至真布局
+                fragmentTransaction4.replace(R.id.container,techNewsFragment);
+                // 提交事务
+                fragmentTransaction4.commit();
+                break;
+        }}
+    }
+
+
     public class MyAdapter extends BaseAdapter {
         @Override
         public int getCount() {

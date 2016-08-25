@@ -37,6 +37,7 @@ import git.dom.com.rainbownews.ScanActivity;
  * 科技新闻
  * Created by Administrator on 2016/8/25 0025.
  */
+
 public class TechNewsFragment extends BaseFragment {
     View view;
     ListView lv_card;
@@ -57,8 +58,9 @@ public class TechNewsFragment extends BaseFragment {
     private ImageView btn_refresh;
     private int lastItem;
     private boolean hadIntercept;
+    private static TechNewsFragment techNewsFragment=new TechNewsFragment();
     private Handler handler = new Handler() {
-        public void handleMessage(Message msg) {
+        public void handleMessage(android.os.Message msg) {
             switch (msg.what) {
                 case 0x123:
                     parseJson((String) msg.obj);
@@ -67,16 +69,16 @@ public class TechNewsFragment extends BaseFragment {
                 default:
             }
 
-        }
-
-        ;
+        };
 
     };
 
     public TechNewsFragment() {
 
     }
-
+public static TechNewsFragment getInstance(){
+    return techNewsFragment;
+}
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -84,7 +86,7 @@ public class TechNewsFragment extends BaseFragment {
         view = inflater.inflate(R.layout.fragment_tech_news, null);
         getData();
         adapter = new CarAdapter(getActivity(), list);
-        lv_card = (ListView) view.findViewById(R.id.lv_society_news);
+        lv_card = (ListView) view.findViewById(R.id.lv_tech_news);
         lv_card.setAdapter(adapter);
         lv_card.setOnScrollListener(new OnScrollListener() {
 
@@ -105,7 +107,7 @@ public class TechNewsFragment extends BaseFragment {
                                  int visibleItemCount, int totalItemCount) {
                 // TODO Auto-generated method stub
                 lastItem = lv_card.getLastVisiblePosition();
-                /*
+				/*
 				 * System.out.println("------->"+lv_card.getLastVisiblePosition()
 				 * );
 				 */
@@ -129,7 +131,8 @@ public class TechNewsFragment extends BaseFragment {
     /**
      * 解析数据返回一个集合
      *
-     * @param content 要解析的内容
+     * @param content
+     *            要解析的内容
      * @return 返货一个List集合
      */
     public void parseJson(String content) {
@@ -193,12 +196,9 @@ public class TechNewsFragment extends BaseFragment {
                 list.add(news);
                 msg.obj = list;
                 handler.sendMessage(msg);
-            }
-
-            ;
+            };
         }.start();
     }
-
 
     @Override
     public boolean onBackPressd() {
@@ -214,4 +214,3 @@ public class TechNewsFragment extends BaseFragment {
         }
     }
 }
-

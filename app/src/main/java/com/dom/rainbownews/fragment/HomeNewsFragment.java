@@ -1,6 +1,8 @@
 
 package com.dom.rainbownews.fragment;
 
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
@@ -28,6 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import git.dom.com.rainbownews.R;
+import git.dom.com.rainbownews.ScanActivity;
 
 
 /**
@@ -52,9 +55,9 @@ public class HomeNewsFragment extends BaseFragment {
     public Drawable picture;
     private CarAdapter adapter;
     private News myNews;
-    private ImageView btn_refresh;
     private int lastItem;
     private boolean hadIntercept;
+    private static final HomeNewsFragment homeNewsFragment=new HomeNewsFragment();
     private Handler handler = new Handler() {
         public void handleMessage(android.os.Message msg) {
             switch (msg.what) {
@@ -64,10 +67,13 @@ public class HomeNewsFragment extends BaseFragment {
                     break;
                 default:
             }
-
         }
     };
-    public HomeNewsFragment() {
+public HomeNewsFragment(){
+
+}
+    public static HomeNewsFragment getInstance(){
+        return homeNewsFragment;
     }
     public CarAdapter getAdapter() {
         return adapter;
@@ -112,9 +118,9 @@ public class HomeNewsFragment extends BaseFragment {
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
                 // TODO Auto-generated method stub
-            /*    Intent intent = new Intent(getActivity(), ScanActivity.class);
+                Intent intent = new Intent(getActivity(), ScanActivity.class);
                 intent.putExtra("url", list.get(position).getUrl());
-                startActivity(intent);*/
+                startActivity(intent);
                 // 页面之间动画切换 enterAnim进入的动画 exitAnim退出的动画
                 // overridePendingTransition(R.anim.tran_in, R.anim.tran_out);
             }

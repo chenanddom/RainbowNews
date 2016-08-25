@@ -59,6 +59,7 @@ public class SocietyNewsFragdment extends BaseFragment {
     private ImageView btn_refresh;
     private int lastItem;
     private boolean hadIntercept;
+    private static final SocietyNewsFragdment societyNewsFragment = new SocietyNewsFragdment();
     private Handler handler = new Handler() {
         public void handleMessage(android.os.Message msg) {
             switch (msg.what) {
@@ -81,7 +82,9 @@ public class SocietyNewsFragdment extends BaseFragment {
     public SocietyNewsFragdment() {
 
     }
-
+public static SocietyNewsFragdment getInstance(){
+    return societyNewsFragment;
+}
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
