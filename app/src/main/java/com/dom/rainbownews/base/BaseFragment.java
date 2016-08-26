@@ -36,4 +36,5 @@ public abstract class BaseFragment extends Fragment {
         super.onStart();
         mBackHandledInterface.setSelectedFragment(this);
     }
+
 }

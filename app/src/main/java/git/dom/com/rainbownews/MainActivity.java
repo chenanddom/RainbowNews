@@ -12,39 +12,46 @@ import android.net.Uri;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
-import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.Window;
-import android.widget.BaseAdapter;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.dom.rainbownews.base.BaseActivity;
 import com.dom.rainbownews.base.BaseFragment;
+import com.dom.rainbownews.domain.MyCity;
+import com.dom.rainbownews.domain.Weather;
 import com.dom.rainbownews.fragment.BackHandledInterface;
 import com.dom.rainbownews.fragment.ForeignNewsFragment;
 import com.dom.rainbownews.fragment.HomeNewsFragment;
 import com.dom.rainbownews.fragment.SocietyNewsFragdment;
 import com.dom.rainbownews.fragment.TechNewsFragment;
 import com.dom.rainbownews.slidingmenu.MySlidingMenu;
+import com.dom.rainbownews.utils.JsonUtils;
 import com.dom.rainbownews.utils.LogUtils;
+import com.dom.rainbownews.utils.NetUtils;
 import com.dom.rainbownews.utils.StreamUtils;
 import com.dom.rainbownews.utils.ToastUtils;
+import com.dom.rainbownews.view.AlwaysMarqueeTextView;
 import com.lidroid.xutils.HttpUtils;
 import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.http.ResponseInfo;
 import com.lidroid.xutils.http.callback.RequestCallBack;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
@@ -55,7 +62,8 @@ import java.util.List;
  * 主窗体实现新闻的概要显示
  * Created by Administrator on 2016/8/23 0023.
  */
-public class MainActivity extends BaseActivity implements View.OnClickListener ,BackHandledInterface,RadioButton.OnCheckedChangeListener{
+public class MainActivity extends BaseActivity implements View.OnClickListener, BackHandledInterface, RadioButton.OnCheckedChangeListener {
+    private AlwaysMarqueeTextView tvWeather;
     private ImageView mMenuToggle;
     private MySlidingMenu mSlidingMenu;
     private RelativeLayout mLayoutUpdate;
@@ -74,11 +82,17 @@ public class MainActivity extends BaseActivity implements View.OnClickListener ,
     private String mDownloadUrl;
     private FragmentManager fragmentManager;
     private List<String> list = new ArrayList<>();
-    private RadioButton mRbHome,mRbForeign,mRbSociety,mRbTech;
+    private RadioButton mRbHome, mRbForeign, mRbSociety, mRbTech;
     private HomeNewsFragment homeNewsFragment;
     private ForeignNewsFragment foreignNewsFragment;
     private SocietyNewsFragdment societyNewsFragdment;
     private TechNewsFragment techNewsFragment;
+    private long exitTime = 0;
+    private BaseFragment mBaseFragment;
+    private  List<MyCity> cityList;
+    private String cityName;
+    private  String[] citys;
+    private String mCityName;
     private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -89,7 +103,24 @@ public class MainActivity extends BaseActivity implements View.OnClickListener ,
                 case Const.ERR_CODE:
                     ToastUtils.ToastInfo(MainActivity.this, "出错了!");
                     break;
-                case 3:
+                case Const.WEATHER_CODE:
+                   List<Weather> weather_list = (ArrayList<Weather>) msg.obj;
+                    String content = null;
+                    StringBuffer sb = new StringBuffer();
+                    mCityName=preferences.getString(Const.CITYNAMEC,"北京");
+                    for (int i = 0; i < weather_list.size(); i++) {
+
+                        content = weather_list.get(i).getDate() + ":"
+                                + weather_list.get(i).getTmp()
+                                + weather_list.get(i).getCond()
+                                + weather_list.get(i).getWind() + "";
+                        sb.append(content);
+                        sb.append(" " + " ");
+                    }
+                    tvWeather.setText(mCityName + "天气" + sb.toString());
+         /*           int i=(int)msg.obj;
+                    ToastUtils.ToastInfo(MainActivity.this,cityList.get(i).getName()+"-"+cityList.get(i).getNamep());*/
+
                     break;
                 case 4:
                     break;
@@ -105,18 +136,19 @@ public class MainActivity extends BaseActivity implements View.OnClickListener ,
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);
         preferences = getSharedPreferences("config", MODE_PRIVATE);
-        fragmentManager=getFragmentManager();
+        fragmentManager = getFragmentManager();
     }
 
     @Override
     public void initData() {
         isUpdate = preferences.getBoolean(Const.ISUPDATE, false);
         isNightMode = preferences.getBoolean(Const.ISNIGHTMODE, false);
-
+        getWeatherData();
     }
 
     @Override
     public void initView() {
+        tvWeather = (AlwaysMarqueeTextView) findViewById(R.id.weather_info);
         mMenuToggle = (ImageView) findViewById(R.id.menu_toggle);
         mSlidingMenu = (MySlidingMenu) findViewById(R.id.slidingmenu);
         mMenuToggle.setOnClickListener(this);
@@ -128,10 +160,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener ,
         mSetting = (RelativeLayout) findViewById(R.id.item_setting);
         checkBox1 = (CheckBox) findViewById(R.id.checkBox1);
         checkBox2 = (CheckBox) findViewById(R.id.checkBox2);
-        mRbHome=(RadioButton)findViewById(R.id.rb_home_news);
-        mRbForeign=(RadioButton)findViewById(R.id.rb_foreign_news);
-        mRbSociety=(RadioButton)findViewById(R.id.rb_socienty_news);
-        mRbTech=(RadioButton)findViewById(R.id.rb_tech_news);
+        mRbHome = (RadioButton) findViewById(R.id.rb_home_news);
+        mRbForeign = (RadioButton) findViewById(R.id.rb_foreign_news);
+        mRbSociety = (RadioButton) findViewById(R.id.rb_socienty_news);
+        mRbTech = (RadioButton) findViewById(R.id.rb_tech_news);
+        tvWeather.setOnClickListener(this);
 
         mLayoutUpdate.setOnClickListener(this);
         mNightMode.setOnClickListener(this);
@@ -159,11 +192,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener ,
             checkBox2.setChecked(false);
         }
         mRbHome.setChecked(true);
-        homeNewsFragment=HomeNewsFragment.getInstance();
+        homeNewsFragment = HomeNewsFragment.getInstance();
         FragmentTransaction fragmentTransaction = fragmentManager
                 .beginTransaction();
         // 把内容显示至真布局
-        fragmentTransaction.replace(R.id.container,homeNewsFragment);
+        fragmentTransaction.replace(R.id.container, homeNewsFragment);
         // 提交事务
         fragmentTransaction.commit();
     }
@@ -392,7 +425,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener ,
                 }
                 break;
             case R.id.item_collect:
-                startActivity(new Intent(MainActivity.this,CollectionActivity.class));
+                startActivity(new Intent(MainActivity.this, CollectionActivity.class));
                 break;
             case R.id.item_note:
                 break;
@@ -400,90 +433,207 @@ public class MainActivity extends BaseActivity implements View.OnClickListener ,
                 break;
             case R.id.item_setting:
                 break;
+            case R.id.weather_info:
+                selectorDialog();
+                break;
             default:
         }
     }
 
     @Override
     public void setSelectedFragment(BaseFragment selectedFragment) {
+        this.mBaseFragment = selectedFragment;
+    }
 
+    @Override
+    public void onBackPressed() {
+        exit();
+        if (mBaseFragment == null || !mBaseFragment.onBackPressd()) {
+            if (getFragmentManager().getBackStackEntryCount() == 0) {
+                super.onBackPressed();
+            } else {
+                getFragmentManager().popBackStack();
+            }
+        }
+    }
+
+    public void exit() {
+        if ((System.currentTimeMillis() - exitTime) > 2000) {
+            Toast.makeText(getApplicationContext(), "再按一次退出程序",
+                    Toast.LENGTH_SHORT).show();
+            exitTime = System.currentTimeMillis();
+        } else {
+            finish();
+            System.exit(0);
+        }
     }
 
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        if(isChecked){
-        switch (buttonView.getId()){
-            case R.id.rb_home_news:
-                if(homeNewsFragment==null){
-                    homeNewsFragment=HomeNewsFragment.getInstance();
-                }
-                FragmentTransaction fragmentTransaction = fragmentManager
-                        .beginTransaction();
-                // 把内容显示至真布局
-                fragmentTransaction.replace(R.id.container,homeNewsFragment);
-                // 提交事务
-                fragmentTransaction.commit();
-                break;
-            case R.id.rb_foreign_news:
-                    if(foreignNewsFragment==null){
-                foreignNewsFragment=ForeignNewsFragment.getInstance();
+        if (isChecked) {
+            switch (buttonView.getId()) {
+                case R.id.rb_home_news:
+                    if (homeNewsFragment == null) {
+                        homeNewsFragment = HomeNewsFragment.getInstance();
+                    }
+                    FragmentTransaction fragmentTransaction = fragmentManager
+                            .beginTransaction();
+                    // 把内容显示至真布局
+                    fragmentTransaction.replace(R.id.container, homeNewsFragment);
+                    // 提交事务
+                    fragmentTransaction.commit();
+                    break;
+                case R.id.rb_foreign_news:
+                    if (foreignNewsFragment == null) {
+                        foreignNewsFragment = ForeignNewsFragment.getInstance();
+                    }
+                    FragmentTransaction fragmentTransaction2 = fragmentManager
+                            .beginTransaction();
+                    // 把内容显示至真布局
+                    fragmentTransaction2.replace(R.id.container, foreignNewsFragment);
+                    // 提交事务
+                    fragmentTransaction2.commit();
+                    break;
+                case R.id.rb_socienty_news:
+                    if (societyNewsFragdment == null) {
+                        societyNewsFragdment = SocietyNewsFragdment.getInstance();
+                    }
+                    FragmentTransaction fragmentTransaction3 = fragmentManager
+                            .beginTransaction();
+                    // 把内容显示至真布局
+                    fragmentTransaction3.replace(R.id.container, societyNewsFragdment);
+                    // 提交事务
+                    fragmentTransaction3.commit();
+                    break;
+                case R.id.rb_tech_news:
+                    if (techNewsFragment == null) {
+                        techNewsFragment = TechNewsFragment.getInstance();
+                    }
+                    FragmentTransaction fragmentTransaction4 = fragmentManager
+                            .beginTransaction();
+                    // 把内容显示至真布局
+                    fragmentTransaction4.replace(R.id.container, techNewsFragment);
+                    // 提交事务
+                    fragmentTransaction4.commit();
+                    break;
             }
-                FragmentTransaction fragmentTransaction2 = fragmentManager
-                        .beginTransaction();
-                // 把内容显示至真布局
-                fragmentTransaction2.replace(R.id.container,foreignNewsFragment);
-                // 提交事务
-                fragmentTransaction2.commit();
-                break;
-            case R.id.rb_socienty_news:
-                if (societyNewsFragdment==null){
-                    societyNewsFragdment=SocietyNewsFragdment.getInstance();
-                }
-                FragmentTransaction fragmentTransaction3 = fragmentManager
-                        .beginTransaction();
-                // 把内容显示至真布局
-                fragmentTransaction3.replace(R.id.container,societyNewsFragdment);
-                // 提交事务
-                fragmentTransaction3.commit();
-                break;
-            case R.id.rb_tech_news:
-                if(techNewsFragment==null){
-                    techNewsFragment=TechNewsFragment.getInstance();
-                }
-                FragmentTransaction fragmentTransaction4 = fragmentManager
-                        .beginTransaction();
-                // 把内容显示至真布局
-                fragmentTransaction4.replace(R.id.container,techNewsFragment);
-                // 提交事务
-                fragmentTransaction4.commit();
-                break;
-        }}
+        }
     }
 
-
-    public class MyAdapter extends BaseAdapter {
-        @Override
-        public int getCount() {
-            return list.size();
+    /**
+     * //获取json数据转成字符串
+     *
+     * @return 返回数据
+     */
+    public String getJson() {
+        try {
+            StringBuffer sb = new StringBuffer();
+            InputStream is = getAssets().open("cityp.json");
+            BufferedReader bufr = new BufferedReader(new InputStreamReader(is,
+                    "utf-8"));
+            String line = null;
+            while ((line = bufr.readLine()) != null) {
+                sb.append(line);
+            }
+            // System.out.println(sb.toString());
+            return sb.toString();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
         }
-
-        @Override
-        public long getItemId(int position) {
-            return position;
+        return null;
+    }
+    public void getCityNamep() {
+       cityList = new ArrayList<MyCity>();
+        cityList = JsonUtils.getCityP(getJson());
+       citys=new String[cityList.size()];
+        for (int i=0;i<cityList.size();i++){
+            citys[i]=cityList.get(i).getName();
         }
+    }
+    public void selectorDialog(){
+        getCityNamep();
+    final AlertDialog.Builder builder=new AlertDialog.Builder(MainActivity.this);
+        View view=View.inflate(MainActivity.this,R.layout.dailog_city_selector,null);
+        final AutoCompleteTextView autoCompleteTextView=(AutoCompleteTextView)view.findViewById(R.id.citys);
+        ArrayAdapter<String> adapter=new ArrayAdapter<String>(MainActivity.this,android.R.layout.simple_dropdown_item_1line,citys);
+        autoCompleteTextView.setAdapter(adapter);
+        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String tv_cityName = autoCompleteTextView.getText().toString().trim();
+                for (int i = 0; i < cityList.size(); i++) {
+                    if (tv_cityName.equals(cityList.get(i).getName())) {
+                        preferences.edit().putString(Const.CITYNAMEC,cityList.get(i).getName()).commit();
+                        preferences.edit().putString(Const.CITYNAMEP, cityList.get(i).getNamep()).commit();
+                        getWeatherData();
+                    }
+                }
+                dialog.dismiss();
+            }
+        });
+        builder.setView(view);
+        builder.show();
+    }
+    /**
+     * 获取天气的数据
+     */
+    public void getWeatherData() {
+        new Thread() {
+            public void run() {
+                List<Weather> list = new ArrayList<Weather>();
+                String httpUrl = "http://apis.baidu.com/heweather/weather/free";
+                String cityname = preferences.getString(Const.CITYNAMEP, "beijing");
+                cityName = cityname;
+                String httpArg = "city=" +cityName;
+                System.out.println("httpArg--->" + httpArg);
+                String result = NetUtils.request(httpUrl, httpArg);
+                System.out.println("result----" + result);
+                try {
 
-        @Override
-        public Object getItem(int position) {
-            return list.get(position);
-        }
+                    JSONObject obj = new JSONObject(result);
+                    String result2 = obj
+                            .getString("HeWeather data service 3.0");
+                    JSONArray array = new JSONArray(result2);
+                    for (int i = 0; i < array.length(); i++) {
+                        JSONObject obj2 = array.getJSONObject(i);
+                        String result3 = obj2.getString("daily_forecast");
+                        JSONArray array2 = new JSONArray(result3);
+                        for (int j = 0; j < array2.length(); j++) {
+                            Weather weather = new Weather();
+                            JSONObject obj3 = array2.getJSONObject(j);
+                            String date = obj3.getString("date");
+                            JSONObject obj4 = obj3.getJSONObject("wind");
+                            String dir = obj4.getString("dir");
+                            String sc = obj4.getString("sc");
+                            JSONObject obj5 = obj3.getJSONObject("tmp");
+                            String min = obj5.getString("min");
+                            String max = obj5.getString("max");
+                            JSONObject obj6 = obj3.getJSONObject("cond");
+                            String txt_n = obj6.getString("txt_n");
+                            String txt_d = obj6.getString("txt_d");
+                            weather.setDate(date);
+                            weather.setWind(dir + sc);
+                            weather.setTmp("最低气温" + min + "度" + "最高气温" + max
+                                    + "度");
+                            weather.setCond(txt_d + "转" + txt_n);
+                            list.add(weather);
+                        }
+						/*
+						 * System.out.println("list--------->" +
+						 * list.toString());
+						 */
+                        Message msg = Message.obtain();
+                        msg.obj = list;
+                        msg.what = Const.WEATHER_CODE;
+                        handler.sendMessage(msg);
+                    }
 
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            TextView tv = new TextView(MainActivity.this);
-            tv.setTextSize(30);
-            tv.setGravity(Gravity.CENTER);
-            tv.setText(list.get(position) + "");
-            return tv;
-        }
+                } catch (Exception e) {
+                    // TODO: handle exception
+                    e.printStackTrace();
+                }
+            }
+        }.start();
     }
 }

@@ -1,7 +1,6 @@
 
 package com.dom.rainbownews.fragment;
 
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -12,7 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
-import android.widget.ImageView;
 import android.widget.ListView;
 
 import com.dom.chache.ImageLoader;
@@ -20,7 +18,9 @@ import com.dom.rainbownews.adapter.CarAdapter;
 import com.dom.rainbownews.base.BaseFragment;
 import com.dom.rainbownews.domain.News;
 import com.dom.rainbownews.utils.DownLoadPicture;
+import com.dom.rainbownews.utils.LogUtils;
 import com.dom.rainbownews.utils.NetUtils;
+
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -62,7 +62,7 @@ public class HomeNewsFragment extends BaseFragment {
         public void handleMessage(android.os.Message msg) {
             switch (msg.what) {
                 case 0x123:
-                    parseJson((String) msg.obj);
+                    parseJson((String)msg.obj);
                     adapter.notifyDataSetChanged();
                     break;
                 default:

@@ -14,7 +14,6 @@ import com.dom.rainbownews.db.NewsCollect;
 import com.dom.rainbownews.domain.Collection;
 import com.dom.rainbownews.utils.LogUtils;
 import com.dom.rainbownews.utils.ToastUtils;
-
 import java.util.List;
 
 public class CollectionActivity extends BaseActivity {
