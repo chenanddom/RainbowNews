@@ -2,22 +2,24 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white"
+    android:background="#E8E8E8"
     android:orientation="vertical"
     >
-<AutoCompleteTextView
-    android:id="@+id/citys"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:completionThreshold="1"
-    android:textSize="30sp"
-    android:background="@android:color/white"
-    android:hint="@string/city_tips"
-    ></AutoCompleteTextView>
+    <AutoCompleteTextView
+            android:id="@+id/citys"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:completionThreshold="1"
+            android:textSize="30sp"
+            android:background="@android:color/white"
+            android:hint="@string/city_tips"
+            ></AutoCompleteTextView>
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="200dp"
+        android:layout_marginTop="100dp"
+
         >
     </RelativeLayout>
 

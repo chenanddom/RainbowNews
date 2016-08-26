@@ -89,9 +89,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     private TechNewsFragment techNewsFragment;
     private long exitTime = 0;
     private BaseFragment mBaseFragment;
-    private  List<MyCity> cityList;
+    private List<MyCity> cityList;
     private String cityName;
-    private  String[] citys;
+    private String[] citys;
     private String mCityName;
     private Handler handler = new Handler() {
         @Override
@@ -104,10 +104,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                     ToastUtils.ToastInfo(MainActivity.this, "出错了!");
                     break;
                 case Const.WEATHER_CODE:
-                   List<Weather> weather_list = (ArrayList<Weather>) msg.obj;
+                    List<Weather> weather_list = (ArrayList<Weather>) msg.obj;
                     String content = null;
                     StringBuffer sb = new StringBuffer();
-                    mCityName=preferences.getString(Const.CITYNAMEC,"北京");
+                    mCityName = preferences.getString(Const.CITYNAMEC, "北京");
                     for (int i = 0; i < weather_list.size(); i++) {
 
                         content = weather_list.get(i).getDate() + ":"
@@ -118,9 +118,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                         sb.append(" " + " ");
                     }
                     tvWeather.setText(mCityName + "天气" + sb.toString());
-         /*           int i=(int)msg.obj;
-                    ToastUtils.ToastInfo(MainActivity.this,cityList.get(i).getName()+"-"+cityList.get(i).getNamep());*/
-
                     break;
                 case 4:
                     break;
@@ -258,6 +255,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                             e.printStackTrace();
                         }
                     }
+
                     handler.sendMessage(msg);
                     if (conn != null) {
                         conn.disconnect();
@@ -456,7 +454,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             }
         }
     }
-
     public void exit() {
         if ((System.currentTimeMillis() - exitTime) > 2000) {
             Toast.makeText(getApplicationContext(), "再按一次退出程序",
@@ -519,7 +516,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             }
         }
     }
-
     /**
      * //获取json数据转成字符串
      *
@@ -544,27 +540,35 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         return null;
     }
     public void getCityNamep() {
-       cityList = new ArrayList<MyCity>();
+        cityList = new ArrayList<MyCity>();
         cityList = JsonUtils.getCityP(getJson());
-       citys=new String[cityList.size()];
-        for (int i=0;i<cityList.size();i++){
-            citys[i]=cityList.get(i).getName();
+        citys = new String[cityList.size()];
+        for (int i = 0; i < cityList.size(); i++) {
+            citys[i] = cityList.get(i).getName();
         }
     }
-    public void selectorDialog(){
+    public void selectorDialog() {
         getCityNamep();
-    final AlertDialog.Builder builder=new AlertDialog.Builder(MainActivity.this);
-        View view=View.inflate(MainActivity.this,R.layout.dailog_city_selector,null);
-        final AutoCompleteTextView autoCompleteTextView=(AutoCompleteTextView)view.findViewById(R.id.citys);
-        ArrayAdapter<String> adapter=new ArrayAdapter<String>(MainActivity.this,android.R.layout.simple_dropdown_item_1line,citys);
+        final AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+        builder.setIcon(android.R.drawable.ic_dialog_info);
+        builder.setTitle("天气查询");
+        View view = View.inflate(MainActivity.this, R.layout.dailog_city_selector, null);
+        final AutoCompleteTextView autoCompleteTextView = (AutoCompleteTextView) view.findViewById(R.id.citys);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_dropdown_item_1line, citys);
         autoCompleteTextView.setAdapter(adapter);
+        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+            }
+        });
         builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 String tv_cityName = autoCompleteTextView.getText().toString().trim();
                 for (int i = 0; i < cityList.size(); i++) {
                     if (tv_cityName.equals(cityList.get(i).getName())) {
-                        preferences.edit().putString(Const.CITYNAMEC,cityList.get(i).getName()).commit();
+                        preferences.edit().putString(Const.CITYNAMEC, cityList.get(i).getName()).commit();
                         preferences.edit().putString(Const.CITYNAMEP, cityList.get(i).getNamep()).commit();
                         getWeatherData();
                     }
@@ -585,12 +589,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                 String httpUrl = "http://apis.baidu.com/heweather/weather/free";
                 String cityname = preferences.getString(Const.CITYNAMEP, "beijing");
                 cityName = cityname;
-                String httpArg = "city=" +cityName;
+                String httpArg = "city=" + cityName;
                 System.out.println("httpArg--->" + httpArg);
                 String result = NetUtils.request(httpUrl, httpArg);
                 System.out.println("result----" + result);
                 try {
-
                     JSONObject obj = new JSONObject(result);
                     String result2 = obj
                             .getString("HeWeather data service 3.0");
@@ -619,16 +622,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                             weather.setCond(txt_d + "转" + txt_n);
                             list.add(weather);
                         }
-						/*
-						 * System.out.println("list--------->" +
-						 * list.toString());
-						 */
                         Message msg = Message.obtain();
                         msg.obj = list;
                         msg.what = Const.WEATHER_CODE;
                         handler.sendMessage(msg);
                     }
-
                 } catch (Exception e) {
                     // TODO: handle exception
                     e.printStackTrace();
