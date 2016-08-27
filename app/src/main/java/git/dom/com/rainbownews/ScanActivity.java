@@ -92,11 +92,10 @@ public class ScanActivity extends BaseActivity implements OnClickListener {
         item_images.add(addItems(new Integer[] { R.mipmap.ic_launcher,
                 R.mipmap.ic_launcher, R.mipmap.ic_launcher,
                 R.mipmap.ic_launcher, R.mipmap.ic_launcher,
-                R.mipmap.ic_launcher, R.mipmap.ic_launcher,
-                R.mipmap.ic_launcher, R.mipmap.ic_launcher }));
+                R.mipmap.ic_launcher}));
         item_names = new ArrayList<List<String>>();
-        item_names.add(addItems(new String[] { "我的收藏", "分享出去", "夜间模式", "随身笔记",
-                "浏览记录", "文学浏览", "无痕浏览", "设置", "退出" }));
+        item_names.add(addItems(new String[] { "我的收藏", "分享出去", "夜间模式",
+                "无痕浏览", "清理缓存", "退出" }));
 
         myPopupMenu = new MyPopupMenu(this, titles, item_names, item_images,
                 data);

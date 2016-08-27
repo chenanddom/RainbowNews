@@ -14,6 +14,8 @@ public class Const {
     public static final  String ISACCOUTSAVE="isaccoutsave";
     public static  final String ACCOUTNAME="accout";
     public static final String ACCOUTPASS="pass";
+    public static final String ISRECORDS="isrecord";
+    public static final String ISCLEARCHACHE="isclearchache";
     public static final String STRUrl="http://192.168.0.104:8088/update2.json";
     public static final String NEWSDBNAME="News";
     public static final int NEWSDBVERSION=1;

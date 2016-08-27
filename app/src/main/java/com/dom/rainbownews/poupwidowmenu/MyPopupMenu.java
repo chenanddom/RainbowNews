@@ -240,48 +240,43 @@ public class MyPopupMenu extends PopupWindow {
                         if (night_mode) {
                             sharedPreferences.edit()
                                     .putBoolean(Const.ISNIGHTMODE, false).commit();
+                            Toast.makeText(context,"关闭夜间模式",Toast.LENGTH_SHORT).show();
                         } else {
                             sharedPreferences.edit()
                                     .putBoolean(Const.ISNIGHTMODE, true).commit();
+                            Toast.makeText(context, "开启夜间模式", Toast.LENGTH_SHORT).show();
                         }
                         break;
                     case 3:
-                       /* context.startActivity(new Intent(context,
-                                ActiveNotesAcivity.class));*/
-                        // `
-                        break;
-                    case 4:
-                        // ToastUnit.showInfo(context, "该功能正在开发中!!");
-                /*        context.startActivity(new Intent(context,
-                                HistoryActivity.class));*/
-                        break;
-                    case 5:
-                        // ToastUnit.showInfo(context, "该功能正在开发中!!");
-                        /*context.startActivity(new Intent(context,
-                                LiteratureActivity.class));*/
-                        break;
-                    case 6:
-                        boolean tag = sharedPreferences.getBoolean(Const.ISPRIVATE,
+                        boolean tag = sharedPreferences.getBoolean(Const.ISRECORDS,
                                 false);
                         if (tag) {
                             sharedPreferences.edit()
-                                    .putBoolean(Const.ISPRIVATE, false).commit();
+                                    .putBoolean(Const.ISRECORDS, false).commit();
                             ToastUtils.ToastInfo(context, "无痕浏览关闭");
                         } else {
                             sharedPreferences.edit()
-                                    .putBoolean(Const.ISPRIVATE, true).commit();
+                                    .putBoolean(Const.ISRECORDS, true).commit();
                             ToastUtils.ToastInfo(context, "无痕浏览开启");
                         }
+                        break;
+                    case 4:
+                        boolean flag2 = sharedPreferences.getBoolean(Const.ISCLEARCHACHE,
+                                false);
+                        if(flag2){
+                            sharedPreferences.edit()
+                                    .putBoolean(Const.ISCLEARCHACHE, false).commit();
+                            ToastUtils.ToastInfo(context, "缓存清理关闭");
+                        }else{
+                            sharedPreferences.edit()
+                                    .putBoolean(Const.ISCLEARCHACHE, true).commit();
+                            ToastUtils.ToastInfo(context, "缓存清理关闭");
+                        }
+                        break;
+                    case 5:
+                       System.exit(0);
+                        break;
 
-                        break;
-                    case 7:
-                        // ToastUnit.showInfo(context, "该功能正在开发中!!");
-                      /*  context.startActivity(new Intent(context,
-                                SettingActivity.class));*/
-                        break;
-                    case 8:
-                        System.exit(0);
-                        break;
                     default:
                 }
             }

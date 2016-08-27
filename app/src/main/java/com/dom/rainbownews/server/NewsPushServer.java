@@ -27,16 +27,17 @@ import git.dom.com.rainbownews.R;
 import git.dom.com.rainbownews.ScanActivity;
 
 public class NewsPushServer extends Service {
-//    private HomeNewsFragment homeNewsFragment;
+    //    private HomeNewsFragment homeNewsFragment;
     private Timer timer;
     private TimerTask task;
     private String title;
     private String picUrl;
     private String url;
-    private List<News> list=new ArrayList<>();
-    private int i=0;
+    private List<News> list = new ArrayList<>();
+    private int i = 0;
     private String mtitle;
     private String murl;
+
     public NewsPushServer() {
     }
 
@@ -54,8 +55,7 @@ public class NewsPushServer extends Service {
         intent.setAction("com.dom.rainbownews.push");
 
 
-
-        final NotificationManager manager = (NotificationManager) getSystemService( Context.NOTIFICATION_SERVICE);
+        final NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         final Notification.Builder builder = new Notification.Builder(this);
         final Intent intent2 = new Intent(this, ScanActivity.class);
 
@@ -65,13 +65,13 @@ public class NewsPushServer extends Service {
             public void run() {
                 String result = NetUtils.request("http://api.huceo.com/guonei/?key=f9a6dc0392b9c598afcf80c60048f8ef&num=10&page=1");
                 parseJson(result);
-                mtitle =  list.get(i).getTitle();
-                murl=list.get(i).getUrl();
+                mtitle = list.get(i).getTitle();
+                murl = list.get(i).getUrl();
 //                intent.putExtra("news", info);
 //                sendBroadcast(intent);
 
-                intent2.putExtra("title",mtitle);
-                intent2.putExtra("url",murl);
+                intent2.putExtra("title", mtitle);
+                intent2.putExtra("url", murl);
                 PendingIntent pendingIntent = PendingIntent.getActivity(NewsPushServer.this, 0, intent2, PendingIntent.FLAG_CANCEL_CURRENT);
                 builder.setContentTitle("新闻");
                 builder.setContentInfo("今日新闻");
@@ -81,14 +81,13 @@ public class NewsPushServer extends Service {
                 builder.setAutoCancel(true);
                 builder.setWhen(System.currentTimeMillis());
                 builder.setContentIntent(pendingIntent);
-                 Notification notification = builder.build();
+                Notification notification = builder.build();
                 manager.notify(1, notification);
             }
         };
-        timer.schedule(task, 1000*30, 1000*60*30);
+        timer.schedule(task, 1000 * 30, 1000 * 60 * 30);
 
     }
-
 
 
     @Override
@@ -102,6 +101,7 @@ public class NewsPushServer extends Service {
     public void onDestroy() {
         super.onDestroy();
     }
+
     public void parseJson(String content) {
         try {
             JSONObject json = new JSONObject(content);
