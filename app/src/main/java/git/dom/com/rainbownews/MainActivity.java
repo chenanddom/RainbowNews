@@ -424,12 +424,22 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                 break;
             case R.id.item_collect:
                 startActivity(new Intent(MainActivity.this, CollectionActivity.class));
+                overridePendingTransition(R.anim.tran_in,R.anim.tran_out);
                 break;
             case R.id.item_note:
+                Intent intent=new Intent(MainActivity.this,ScanActivity.class);
+                intent.putExtra("title","GitHub上的我");
+                intent.putExtra("url","https://github.com/chenanddom/RainbowNews");
+                startActivity(intent);
+                overridePendingTransition(R.anim.tran_in,R.anim.tran_out);
                 break;
             case R.id.item_about:
+                startActivity(new Intent(MainActivity.this,AboutActivity.class));
+                overridePendingTransition(R.anim.tran_in,R.anim.tran_out);
                 break;
             case R.id.item_setting:
+                startActivity(new Intent(MainActivity.this,SettingActivity.class));
+                overridePendingTransition(R.anim.tran_in,R.anim.tran_out);
                 break;
             case R.id.weather_info:
                 selectorDialog();
@@ -437,12 +447,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             default:
         }
     }
-
     @Override
     public void setSelectedFragment(BaseFragment selectedFragment) {
         this.mBaseFragment = selectedFragment;
     }
-
     @Override
     public void onBackPressed() {
         exit();

@@ -12,7 +12,7 @@
     <string name="update">自动更新</string>
     <string name="mode">夜间模式</string>
     <string name="collect">收藏网址</string>
-    <string name="capture">随身笔记</string>
+    <string name="capture">GitHub上的我</string>
     <string name="about">关于我们</string>
     <string name="note">随身笔记</string>
     <string name="share">我的分享</string>
@@ -40,4 +40,8 @@
     <string name="private_browsing">无痕浏览</string>
     <string name="title_activity_collect">CollectActivity</string>
     <string name="city_tips">请输入城市名称</string>
+    <string name="title_activity_about">AboutActivity</string>
+    <string name="version_code">七彩新闻 V2.1.0</string>
+    <string name="news_push">新闻推送</string>
+    <string name="accout_save">账户安全</string>
 </resources>

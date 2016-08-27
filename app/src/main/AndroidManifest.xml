@@ -31,7 +31,19 @@
 
         <activity
             android:name=".CollectionActivity"
-            android:label="@string/title_activity_collect"></activity>
+            android:label="@string/title_activity_collect" />
+        <activity android:name=".AboutActivity" />
+        <activity android:name=".SettingActivity" />
+
+        <service
+            android:name="com.dom.rainbownews.server.NewsPushServer"
+            android:enabled="true"
+            android:exported="true"></service>
+        <receiver android:name="com.dom.rainbownews.server.NewsReceiver">
+            <intent-filter>
+                <action android:name="com.dom.rainbownews.push"></action>
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

@@ -35,7 +35,7 @@ public class LandingPageActivity extends BaseActivity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         sharedPreferences = this.getSharedPreferences("config", MODE_PRIVATE);
         setContentView(R.layout.activity_landingpage);
-        flag = sharedPreferences.getBoolean("islock", false);
+        flag = sharedPreferences.getBoolean(Const.ISACCOUTSAVE, false);
     }
 
     @Override

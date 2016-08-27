@@ -10,6 +10,10 @@ public class Const {
     public static final String WEATHERCODE="weather";
     public static final String CITYNAMEP="citynamep";
     public static final String CITYNAMEC="citynamec";
+    public static final String ISNEWSPUSH="isnewspush";
+    public static final  String ISACCOUTSAVE="isaccoutsave";
+    public static  final String ACCOUTNAME="accout";
+    public static final String ACCOUTPASS="pass";
     public static final String STRUrl="http://192.168.0.104:8088/update2.json";
     public static final String NEWSDBNAME="News";
     public static final int NEWSDBVERSION=1;
