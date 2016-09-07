@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import git.dom.com.rainbownews.Const;
 import git.dom.com.rainbownews.MainActivity;
 import git.dom.com.rainbownews.R;
 import git.dom.com.rainbownews.ScanActivity;
@@ -63,7 +64,9 @@ public class NewsPushServer extends Service {
         task = new TimerTask() {
             @Override
             public void run() {
-                String result = NetUtils.request("http://api.huceo.com/guonei/?key=f9a6dc0392b9c598afcf80c60048f8ef&num=10&page=1");
+                String[] arr={Const.HOMENEWS,Const.FOREIGNNEWS,Const.SOCIETYNEWS,Const.TECHNEWS};
+                int ran = (int)Math.random()*3;
+                String result = NetUtils.request(arr[ran]);
                 parseJson(result);
                 mtitle = list.get(i).getTitle();
                 murl = list.get(i).getUrl();

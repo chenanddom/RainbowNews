@@ -32,6 +32,7 @@ import com.dom.rainbownews.domain.News;
 import com.dom.rainbownews.utils.DownLoadPicture;
 import com.dom.rainbownews.utils.NetUtils;
 
+import git.dom.com.rainbownews.Const;
 import git.dom.com.rainbownews.R;
 import git.dom.com.rainbownews.ScanActivity;
 
@@ -47,7 +48,7 @@ public class SocietyNewsFragdment extends BaseFragment {
     // 请求的页码
     private int page = 1;
     // 请求网址
-    private String httpUrl = "http://api.huceo.com/social/?key=f9a6dc0392b9c598afcf80c60048f8ef&num="
+    private String httpUrl = "http://api.huceo.com/social/?key="+ Const.MKEY+"&num="
             + num + "&page=" + page;
     private List<News> list = new ArrayList<News>();
     private String title;

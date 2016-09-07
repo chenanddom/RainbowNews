@@ -30,6 +30,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import git.dom.com.rainbownews.Const;
 import git.dom.com.rainbownews.R;
 import git.dom.com.rainbownews.ScanActivity;
 
@@ -46,7 +47,7 @@ public class TechNewsFragment extends BaseFragment {
     // 请求的页码
     private int page = 1;
     // 请求网址
-    private String httpUrl = "http://api.huceo.com/keji/?key=f9a6dc0392b9c598afcf80c60048f8ef&num="
+    private String httpUrl = "http://api.huceo.com/keji/?key="+ Const.MKEY+"&num="
             + num + "&page=" + page;
     private List<News> list = new ArrayList<News>();
     private String title;
