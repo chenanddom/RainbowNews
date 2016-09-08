@@ -13,6 +13,7 @@ import com.dom.rainbownews.adapter.HistoryAdapter;
 import com.dom.rainbownews.base.BaseActivity;
 import com.dom.rainbownews.db.HistoryRecord;
 import com.dom.rainbownews.domain.History;
+import com.dom.rainbownews.utils.LogUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +34,6 @@ public class HistoryActivity extends BaseActivity implements AdapterView.OnItemL
         setContentView(R.layout.activity_history);
         record = new HistoryRecord(HistoryActivity.this);
     }
-
     @Override
     public void initView() {
         listView = (ListView) findViewById(R.id.lvhistorycontent);
@@ -42,13 +42,11 @@ public class HistoryActivity extends BaseActivity implements AdapterView.OnItemL
         adapter = new HistoryAdapter(HistoryActivity.this, list);
         listView.setAdapter(adapter);
     }
-
     @Override
     public void initData() {
         list = record.findAllHistory();
         System.out.println(list.toString());
     }
-
     @Override
     public void setListener() {
         listView.setOnItemLongClickListener(this);
@@ -58,7 +56,7 @@ public class HistoryActivity extends BaseActivity implements AdapterView.OnItemL
                 boolean tag;
                 for (int i = 0; i < mlist.size(); i++) {
                     tag = record.deleteHistory(mlist.get(i).getId());
-                    System.out.println("----------------------------------"+tag+"-----------------------------------");
+                    LogUtils.printInfo("tag","---------------------------------"+tag+"-----------------------------------");
                     if (tag) {
                         list.remove(mlist.get(i));
                         adapter.notifyDataSetChanged();
@@ -74,7 +72,6 @@ public class HistoryActivity extends BaseActivity implements AdapterView.OnItemL
             }
         });
     }
-
     @Override
     public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
         CheckBox cb = (CheckBox) view.findViewById(R.id.cbselect);
