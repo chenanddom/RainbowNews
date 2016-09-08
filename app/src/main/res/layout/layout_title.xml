@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="50dp"
+    android:background="@android:color/holo_blue_light"
+    >
+    <ImageButton
+        android:id="@+id/imghistoryback"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:background="@drawable/btn_back_selector"
+        />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:textColor="@android:color/white"
+            android:text="@string/history"
+            android:textSize="30sp"
+            android:gravity="center"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true" />
+        <ImageButton
+            android:id="@+id/recordclear"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+
+            android:background="@drawable/btn_delete_selector"
+            />
+</RelativeLayout>

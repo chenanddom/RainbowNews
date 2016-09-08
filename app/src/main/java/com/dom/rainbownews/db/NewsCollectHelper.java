@@ -23,6 +23,8 @@ public class NewsCollectHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-
+        String sql = "drop table news";
+        db.execSQL(sql);
+        this.onCreate(db);
     }
 }

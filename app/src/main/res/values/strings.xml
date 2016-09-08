@@ -45,4 +45,5 @@
     <string name="news_push">新闻推送</string>
     <string name="accout_save">账户安全</string>
     <string name="chache_clear">缓存清理</string>
+    <string name="history">历史纪录</string>
 </resources>

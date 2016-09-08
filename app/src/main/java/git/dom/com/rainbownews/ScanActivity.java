@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -14,7 +15,9 @@ import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
+
 import com.dom.rainbownews.base.BaseActivity;
+import com.dom.rainbownews.db.HistoryRecord;
 import com.dom.rainbownews.poupwidowmenu.MyPopupMenu;
 
 import java.util.ArrayList;
@@ -42,14 +45,17 @@ public class ScanActivity extends BaseActivity implements OnClickListener {
     private List<List<Integer>> item_images; // 选项图标
     private MyPopupMenu myPopupMenu;
     private String[] data;
-//    private HistoryItem historyItem;
+    //    private HistoryItem historyItem;
     private boolean tag;//是否开启隐私模式
+    private HistoryRecord record;
 
     @Override
     public void setView() {
         // TODO Auto-generated method stub
+
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_scan);
+        record = new HistoryRecord(ScanActivity.this);
         data = new String[3];
         sharedPreferences = getSharedPreferences("config", MODE_PRIVATE);
 //        historyItem = new HistoryItem(ScanActivity.this);
@@ -57,23 +63,27 @@ public class ScanActivity extends BaseActivity implements OnClickListener {
         Intent intent = getIntent();
         title = intent.getStringExtra("title");
         url = intent.getStringExtra("url");
-        if (TextUtils.isEmpty(title)){
+        if (TextUtils.isEmpty(title)) {
             data[0] = "标题未知";
             data[1] = url;
             data[2] = System.currentTimeMillis() + "";
-    }else{
-        data[0] = title;
-        data[1] = url;
-        data[2] = System.currentTimeMillis() + "";
-    }
+           boolean flag= record.addHistory("未知标题", url);
+            Log.i("tag","-------------------------------------------------"+flag+"---------------------------------------");
+        } else {
+            data[0] = title;
+            data[1] = url;
+            data[2] = System.currentTimeMillis() + "";
+            boolean tag = record.addHistory(title, url);
+            Log.i("tag","-------------------------------------------------"+tag+"---------------------------------------");
+        }
         night_mode = sharedPreferences.getBoolean(Const.ISNIGHTMODE, false);
         if (night_mode) {
             layout_bar.setBackgroundResource(R.mipmap.title_barbackground);
         }
         tag = sharedPreferences.getBoolean(Const.ISPRIVATE, false);
-        if(tag){
-            System.out.println("------------------》"+title+"---"+url);
-        }else{
+        if (tag) {
+            System.out.println("------------------》" + title + "---" + url);
+        } else {
             addHistory(title, url);
         }
         initData2();
@@ -89,13 +99,13 @@ public class ScanActivity extends BaseActivity implements OnClickListener {
          * 选项图标
          */
         item_images = new ArrayList<List<Integer>>();
-        item_images.add(addItems(new Integer[] { R.mipmap.ic_launcher,
+        item_images.add(addItems(new Integer[]{R.mipmap.ic_launcher,
                 R.mipmap.ic_launcher, R.mipmap.ic_launcher,
                 R.mipmap.ic_launcher, R.mipmap.ic_launcher,
                 R.mipmap.ic_launcher}));
         item_names = new ArrayList<List<String>>();
-        item_names.add(addItems(new String[] { "我的收藏", "分享出去", "夜间模式",
-                "无痕浏览", "清理缓存", "退出" }));
+        item_names.add(addItems(new String[]{"我的收藏", "分享出去", "夜间模式",
+                "历史纪录", "清理缓存", "退出"}));
 
         myPopupMenu = new MyPopupMenu(this, titles, item_names, item_images,
                 data);
@@ -128,7 +138,7 @@ public class ScanActivity extends BaseActivity implements OnClickListener {
     @Override
     public void setListener() {
         // TODO Auto-generated method stub
-		/*
+        /*
 		 * NewsCollect nc = new NewsCollect(ScanActivity.this); List<Collection>
 		 * list = nc.findAll();
 		 * System.out.println("========"+list.get(0).getTitle());

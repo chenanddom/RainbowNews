@@ -31,6 +31,7 @@ import com.dom.rainbownews.utils.ToastUtils;
 import java.util.List;
 
 import git.dom.com.rainbownews.Const;
+import git.dom.com.rainbownews.HistoryActivity;
 
 public class MyPopupMenu extends PopupWindow {
 
@@ -248,17 +249,19 @@ public class MyPopupMenu extends PopupWindow {
                         }
                         break;
                     case 3:
-                        boolean tag = sharedPreferences.getBoolean(Const.ISRECORDS,
+         /*               boolean tag = sharedPreferences.getBoolean(Const.ISRECORDS,
                                 false);
                         if (tag) {
-                            sharedPreferences.edit()
-                                    .putBoolean(Const.ISRECORDS, false).commit();
+                           *//* sharedPreferences.edit()
+                                    .putBoolean(Const.ISRECORDS, false).commit();*//*
                             ToastUtils.ToastInfo(context, "无痕浏览关闭");
                         } else {
                             sharedPreferences.edit()
                                     .putBoolean(Const.ISRECORDS, true).commit();
                             ToastUtils.ToastInfo(context, "无痕浏览开启");
-                        }
+                        }*/
+                        context.startActivity(new Intent(context, HistoryActivity.class));
+                        
                         break;
                     case 4:
                         boolean flag2 = sharedPreferences.getBoolean(Const.ISCLEARCHACHE,

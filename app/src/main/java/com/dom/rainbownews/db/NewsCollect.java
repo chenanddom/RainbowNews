@@ -28,6 +28,7 @@ public class NewsCollect {
         contentValues.put("url", url);
         contentValues.put("time", time);
         long rowId = db.insert("news", null, contentValues);
+
         if (rowId == -1) {
             return false;
         } else {
