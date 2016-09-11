@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.Window;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ToggleButton;
 
 import com.dom.rainbownews.base.BaseActivity;
@@ -21,10 +22,14 @@ import com.dom.rainbownews.utils.ToastUtils;
 public class SettingActivity extends BaseActivity {
     private ToggleButton mTBNewsPush;
     private ToggleButton mTBAccoutSave;
+    private ToggleButton mTBChacheClear;
     private SharedPreferences preferences;
     private boolean isPush = false;
     private boolean isSave = false;
-   private Intent intent;
+    private boolean isClear = false;
+    private Intent intent;
+    private ImageButton mIBack;
+
 
     @Override
     public void setView() {
@@ -37,14 +42,17 @@ public class SettingActivity extends BaseActivity {
         preferences = this.getSharedPreferences("config", MODE_PRIVATE);
         isPush = preferences.getBoolean(Const.ISNEWSPUSH, false);
         isSave = preferences.getBoolean(Const.ISACCOUTSAVE, false);
+        isClear = preferences.getBoolean(Const.ISCLEARCHACHE, false);
 //        ToastUtils.ToastInfo(SettingActivity.this,"isPush"+isPush+"-"+"isSave"+isSave);
-     intent =new Intent(SettingActivity.this, NewsPushServer.class);
+        intent = new Intent(SettingActivity.this, NewsPushServer.class);
     }
 
     @Override
     public void initView() {
         mTBNewsPush = (ToggleButton) findViewById(R.id.news_push);
         mTBAccoutSave = (ToggleButton) findViewById(R.id.accout_save);
+        mIBack = (ImageButton) findViewById(R.id.btn_setting_back);
+        mTBChacheClear = (ToggleButton) findViewById(R.id.chache_clear);
         if (isPush) {
             mTBNewsPush.setChecked(true);
         } else {
@@ -54,6 +62,11 @@ public class SettingActivity extends BaseActivity {
             mTBAccoutSave.setChecked(true);
         } else {
             mTBAccoutSave.setChecked(false);
+        }
+        if (isClear) {
+            mTBChacheClear.setChecked(true);
+        } else {
+            mTBChacheClear.setChecked(false);
         }
     }
 
@@ -93,12 +106,35 @@ public class SettingActivity extends BaseActivity {
                 }
             }
         });
+        mTBChacheClear.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                isClear = preferences.getBoolean(Const.ISCLEARCHACHE, false);
+                if (isClear) {
+                    mTBChacheClear.setChecked(false);
+                    preferences.edit().putBoolean(Const.ISCLEARCHACHE, false).commit();
+                    ToastUtils.ToastInfo(SettingActivity.this,"自动清理缓存关闭");
+                } else {
+                    mTBChacheClear.setChecked(true);
+                    preferences.edit().putBoolean(Const.ISCLEARCHACHE, true).commit();
+                    ToastUtils.ToastInfo(SettingActivity.this, "自动清理缓存开启");
+                }
+            }
+        });
+        mIBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+                overridePendingTransition(R.anim.tran_in, R.anim.tran_out);
+
+            }
+        });
     }
 
     public void showDialog() {
         View view = View.inflate(SettingActivity.this, R.layout.accout_input_dailog, null);
-        final EditText edit_accout = (EditText)view.findViewById(R.id.edit_accout);
-        final EditText edit_pass = (EditText)view.findViewById(R.id.edit_pass);
+        final EditText edit_accout = (EditText) view.findViewById(R.id.edit_accout);
+        final EditText edit_pass = (EditText) view.findViewById(R.id.edit_pass);
         AlertDialog.Builder builder = new AlertDialog.Builder(SettingActivity.this);
         builder.setIcon(R.mipmap.accout);
         builder.setTitle("账户信息");

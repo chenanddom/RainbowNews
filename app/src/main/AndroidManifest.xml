@@ -14,7 +14,6 @@
         <meta-data
             android:name="UMENG_CHANNEL"
             android:value="${UMENG_CHANNEL_VALUE}" />
-
         <activity android:name=".LandingPageActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -38,19 +37,16 @@
             android:label="@string/title_activity_collect" />
         <activity android:name=".AboutActivity" />
         <activity android:name=".SettingActivity" />
-
+        <activity android:name=".HistoryActivity"/>
         <service
             android:name="com.dom.rainbownews.server.NewsPushServer"
             android:enabled="true"
-            android:exported="true" />
-
+            android:exported="true"></service>
         <receiver android:name="com.dom.rainbownews.server.NewsReceiver">
             <intent-filter>
-                <action android:name="com.dom.rainbownews.push" />
+                <action android:name="com.dom.rainbownews.push"></action>
             </intent-filter>
         </receiver>
-
-        <activity android:name=".HistoryActivity"></activity>
     </application>
 
 </manifest>

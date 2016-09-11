@@ -3,8 +3,22 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
+    <RelativeLayout
+        android:id="@+id/layout_bar"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="@android:color/holo_blue_light"
+        >
+        <ImageButton
+            android:id="@+id/btn_setting_back"
+            android:layout_width="30dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/btn_back_selector"
+            />
 
+    </RelativeLayout>
     <ImageView
+        android:layout_marginTop="5dp"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@android:color/darker_gray" />
