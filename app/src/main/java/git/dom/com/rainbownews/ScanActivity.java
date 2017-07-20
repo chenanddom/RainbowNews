@@ -11,6 +11,7 @@ import android.view.View.OnClickListener;
 import android.view.Window;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.PopupWindow;
@@ -130,7 +131,13 @@ public class ScanActivity extends BaseActivity implements OnClickListener {
         webview_next.setOnClickListener(this);
         menu_btn.setOnClickListener(this);
         webViewSetting(webView);
-        webView.loadUrl(url);
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                webView.loadUrl(url);
+            }
+        });
+//        webView.loadUrl("https://github.com/chenanddom/RainbowNews");
 
 
     }
@@ -208,12 +215,21 @@ public class ScanActivity extends BaseActivity implements OnClickListener {
         // 设置此属性，可任意比例缩放
         webSettings.setUseWideViewPort(true);
         webSettings.setLoadWithOverviewMode(true);
-        // webSettings.setJavaScriptEnabled(true); //支持js
+         webSettings.setJavaScriptEnabled(true); //支持js
         // 优先使用缓存：
         mWebView.loadDataWithBaseURL(null, "", "text/html", "utf-8", null);
         mWebView.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
         mWebView.clearCache(true);
         mWebView.destroyDrawingCache();
+        webSettings.setSupportMultipleWindows(false);//设置是否支持多窗口,此处强制不支持多窗口
+        //此处设置可以使用程序的自带的webview开启的网页，而不需要打开系统或者自己下载的浏览器
+        mWebView.setWebViewClient(new WebViewClient(){
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                view.loadUrl(url);
+                return true;
+            }
+        });
     }
 
     /**

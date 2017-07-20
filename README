@@ -1,0 +1,23 @@
+优化：
+1.webview强制设置不支持多窗口
+webSettings.setSupportMultipleWindows(false);
+
+
+2.webview设置在自己应用的webview中打开网页
+mWebView.setWebViewClient(new WebViewClient(){
+@Override
+public boolean shouldOverrideUrlLoading(WebView view, String url) {
+view.loadUrl(url);
+ return true;
+  }
+});
+
+
+
+3.在UI线程加载网页
+runOnUiThread(new Runnable() {
+@Override
+public void run() {
+ webView.loadUrl(url);
+}
+});
